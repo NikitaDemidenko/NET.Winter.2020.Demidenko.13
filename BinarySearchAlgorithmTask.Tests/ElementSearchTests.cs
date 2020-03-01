@@ -19,13 +19,6 @@ namespace BinarySearchAlgorithmTask.Tests
         }
 
         [Test]
-        public void BinarySearch_ComparerIsNull_ThrowArgumentNullException()
-        {
-            IComparer<int> comparer = null;
-            Assert.Throws<ArgumentNullException>(() => BinarySearch(new int[] { 1, 2 }, 1, comparer));
-        }
-
-        [Test]
         public void BinarySearch_UnorderedArray_ThrowArgumentException() =>
             Assert.Throws<ArgumentException>(() => BinarySearch(new int[] { 1, 3, 3, 5, 6, 11, 13, 16, -2, 22 }, 1, Comparer<int>.Default));
 

@@ -48,7 +48,7 @@ namespace BinarySearchAlgorithmTask
                 throw new ArgumentNullException(nameof(comparer));
             }
 
-            return BinarySearch(source, item, new ComparerAdapter<T>(comparer));
+            return BinarySearch(source, item, Comparer<T>.Create(comparer));
         }
 
         private static void Validation<T>(T[] source, IComparer<T> comparer)
@@ -60,7 +60,7 @@ namespace BinarySearchAlgorithmTask
 
             if (comparer == null)
             {
-                throw new ArgumentNullException(nameof(comparer));
+                comparer = Comparer<T>.Default;
             }
 
             for (int i = 0; i < source.Length - 1; i++)
