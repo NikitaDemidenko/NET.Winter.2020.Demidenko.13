@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace BinarySearchTreeTask
@@ -7,15 +8,25 @@ namespace BinarySearchTreeTask
     /// Binary search tree.
     /// </summary>
     /// <typeparam name="T">Type of elements.</typeparam>
-    public class BinarySearchTree<T>
+    public class BinarySearchTree<T> : IEnumerable<T>
     {
         private readonly IComparer<T> comparer;
         private Node<T> root;
+        private EnumerationType enumerationType;
 
         /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class that uses a default comparer.</summary>
         public BinarySearchTree()
         {
             this.comparer = Comparer<T>.Default;
+            this.enumerationType = EnumerationType.PreOrder;
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class.</summary>
+        /// <param name="enumerationType">Type of the enumeration.</param>
+        public BinarySearchTree(EnumerationType enumerationType)
+            : this()
+        {
+            this.enumerationType = enumerationType;
         }
 
         /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class that uses a specified comparer.</summary>
@@ -24,6 +35,16 @@ namespace BinarySearchTreeTask
         public BinarySearchTree(IComparer<T> comparer)
         {
             this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.enumerationType = EnumerationType.PreOrder;
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class.</summary>
+        /// <param name="comparer">The comparer.</param>
+        /// <param name="enumerationType">Type of the enumeration.</param>
+        public BinarySearchTree(IComparer<T> comparer, EnumerationType enumerationType)
+            : this(comparer)
+        {
+            this.enumerationType = enumerationType;
         }
 
         /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class that contains elements copied from a specified enumerable collection.</summary>
@@ -43,6 +64,15 @@ namespace BinarySearchTreeTask
             }
         }
 
+        /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class.</summary>
+        /// <param name="collection">The collection.</param>
+        /// <param name="enumerationType">Type of the enumeration.</param>
+        public BinarySearchTree(IEnumerable<T> collection, EnumerationType enumerationType)
+            : this(collection)
+        {
+            this.enumerationType = enumerationType;
+        }
+
         /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class that contains elements copied from a specified enumerable collection and that uses a specified comparer.</summary>
         /// <param name="collection">The collection.</param>
         /// <param name="comparer">The comparer.</param>
@@ -59,6 +89,16 @@ namespace BinarySearchTreeTask
             {
                 this.AddItem(item);
             }
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="BinarySearchTree{T}"/> class.</summary>
+        /// <param name="collection">The collection.</param>
+        /// <param name="comparer">The comparer.</param>
+        /// <param name="enumerationType">Type of the enumeration.</param>
+        public BinarySearchTree(IEnumerable<T> collection, IComparer<T> comparer, EnumerationType enumerationType)
+            : this(collection, comparer)
+        {
+            this.enumerationType = enumerationType;
         }
 
         /// <summary>Adds the item into the tree.</summary>
@@ -219,6 +259,44 @@ namespace BinarySearchTreeTask
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through the collection.</returns>
+        public IEnumerator<T> GetEnumerator()
+        {
+            switch (this.enumerationType)
+            {
+                case EnumerationType.PostOrder:
+                    foreach (var item in this.PostorderTraversal())
+                    {
+                        yield return item;
+                    }
+
+                    break;
+                case EnumerationType.PreOrder:
+                    foreach (var item in this.PreorderTraversal())
+                    {
+                        yield return item;
+                    }
+
+                    break;
+                case EnumerationType.InOrder:
+                    foreach (var item in this.InorderTraversal())
+                    {
+                        yield return item;
+                    }
+
+                    break;
+            }
+        }
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }
